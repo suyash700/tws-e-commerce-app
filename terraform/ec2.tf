@@ -1,20 +1,27 @@
-data "aws_ami" "os_image" {
+
+#DATA-BLOCK for ami id
+#owners(ami) -> most_recent = true -> filter {name,values(ami-name)}
+data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
   most_recent = true
+
   filter {
-    name   = "state"
-    values = ["available"]
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250821"]
   }
-  filter {
-    name = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/*24.04-amd64*"]
+
+   filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
   }
 }
 
-resource "aws_key_pair" "deployer" {
-  key_name   = "terra-automate-key"
-  public_key = file("terra-key.pub")
+resource "aws_key_pair" "my-ec2-key" {
+  key_name   = "my-ec2-key"
+  public_key = file("./terra-key.pub")
 }
+
+
 
 resource "aws_default_vpc" "default" {
 
@@ -69,18 +76,20 @@ resource "aws_security_group" "allow_user_to_connect" {
   }
 }
 
-resource "aws_instance" "testinstance" {
-  ami             = data.aws_ami.os_image.id
-  instance_type   = var.instance_type 
-  key_name        = aws_key_pair.deployer.key_name
+resource "aws_instance" "my-ec2-instance" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type
+  key_name = aws_key_pair.my-ec2-key.key_name
   security_groups = [aws_security_group.allow_user_to_connect.name]
   user_data = file("${path.module}/install_tools.sh")
+
+
   tags = {
     Name = "Jenkins-Automate"
   }
-  root_block_device {
+
+    root_block_device {
     volume_size = 20
     volume_type = "gp3"
   }
-  
 }
