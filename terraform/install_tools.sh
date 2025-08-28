@@ -42,3 +42,22 @@ sudo snap install helm --classic
 
 # Kubectl installation
 sudo snap install kubectl --classic
+
+# ArgoCD installation
+if kubectl cluster-info > /dev/null 2>&1; then
+  echo "Kubernetes cluster detected. Installing ArgoCD..."
+  kubectl create namespace argocd || echo "Namespace argocd already exists"
+  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+else
+  echo "⚠️ No Kubernetes cluster detected. Skipping ArgoCD installation."
+fi
+
+  # Metrics Server installation (official YAML)
+  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+else
+  echo "⚠️ No Kubernetes cluster detected. Skipping ArgoCD and Metrics Server installation."
+fi
+
+echo "done"
+
