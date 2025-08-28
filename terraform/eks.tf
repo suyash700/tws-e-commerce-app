@@ -1,7 +1,8 @@
 module "eks" {
 
-   source  = "terraform-aws-modules/eks/aws"
-   version = "~> 20.0"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "19.15.1"
+
   cluster_name                   = local.name
   cluster_endpoint_public_access = true
 
@@ -35,6 +36,7 @@ module "eks" {
   eks_managed_node_groups = {
 
     suyash-ng = {
+      Name = local.Node_name
       min_size     = 2
       max_size     = 3
       desired_size = 2
@@ -42,7 +44,7 @@ module "eks" {
       instance_types = local.node_types
       capacity_type  = "SPOT"
 
-      disk_size = 35 
+      disk_size = 25
       use_custom_launch_template = false  # Important to apply disk size!
 
       tags = {
@@ -55,7 +57,16 @@ module "eks" {
  
   tags = local.tags
 
-
+}
+# Security Group Rules for NodePort and port 8080
+resource "aws_security_group_rule" "eks_nodes_nodeport_ingress" {
+  type              = "ingress"
+  description       = "Allow NodePort range and port 8080"
+  from_port         = 30000
+  to_port           = 32767
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.eks.node_security_group_id
 }
 
 data "aws_instances" "eks_nodes" {
@@ -67,6 +78,6 @@ data "aws_instances" "eks_nodes" {
     name   = "instance-state-name"
     values = ["running"]
   }
-  
+
   depends_on = [module.eks]
 }
