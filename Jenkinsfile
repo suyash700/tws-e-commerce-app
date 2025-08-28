@@ -18,7 +18,7 @@ pipeline{
         stage("Clean Workspace"){
             steps{
               script{
-                clean_ws()
+                call()
               }
             }
         }
@@ -26,7 +26,7 @@ pipeline{
         stage("pull repo(clone)"){
             steps{
                 script{
-                     clone("${GIT_URL}","${GIT_BRANCH}")
+                     call("${GIT_URL}","${GIT_BRANCH}")
                 }
             }
         }
