@@ -30,7 +30,7 @@ ENV MONGODB_URI=$MONGODB_URI \
 WORKDIR /app
 
 #COPY
-COPY package*.json .
+COPY package*.json ./
 
 #CLEAN INSTALL
 RUN npm ci
