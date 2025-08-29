@@ -1,41 +1,74 @@
-# Stage 1: Development/Build Stage
-FROM node:18-alpine AS builder
+#BUILDER
 
-# Set working directory
+##Stage 1
+
+#Base Image
+FROM node:18-alpine as builder
+
+#BUILD-TIME ENV VARS
+# Add build-time environment variables
+ARG MONGODB_URI=mongodb://localhost:27017/easyshop
+ARG REDIS_URI=redis://localhost:6379
+ARG NEXTAUTH_URL
+ARG NEXT_PUBLIC_API_URL
+ARG NEXTAUTH_SECRET
+ARG JWT_SECRET
+ARG NODE_ENV=production
+
+# Set environment variables for the build
+ENV MONGODB_URI=$MONGODB_URI \
+    REDIS_URI=$REDIS_URI \
+    NEXTAUTH_URL=$NEXTAUTH_URL \
+    NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
+    JWT_SECRET=$JWT_SECRET \
+    NODE_ENV=$NODE_ENV \
+    NEXT_PHASE=phase-production-build
+
+
+#WORKDIR
 WORKDIR /app
 
-# Install necessary build dependencies
-RUN apk add --no-cache python3 make g++
+#COPY
+COPY package*.json
 
-# Copy package files
-COPY package*.json ./
+#CLEAN INSTALL
+npm ci
 
-# Install dependencies
-RUN npm ci
+#COPY REMAINING FILES FOLDERS TO BUILDER STAGE (/app)
+COPY . . 
 
-# Copy all project files
-COPY . .
-
-# Build the Next.js application
+#BUILD IT
 RUN npm run build
 
-# Stage 2: Production Stage
-FROM node:18-alpine AS runner
+#RUNNER
 
-# Set working directory
+##STAGE 2
+
+#BASE Image
+
+FROM node:18-alpine as builder
+
+#WORKDIR
 WORKDIR /app
 
-# Copy necessary files from builder stage
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+#SET ENV VARS
+
+ENV NODE_ENV=production \
+    PORT=3000 \
+    # These are placeholder values that will be overridden at runtime
+    MONGODB_URI=mongodb://mongodb:27017/easyshop \
+    REDIS_URI=redis://redis:6379
+
+
+#COPY NECESSARY FILES
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/next ./.next
+COPY --from=builder /app/node_modules ./node_modules
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-
-# Expose the port the app runs on
+#EXPOSE PORT
 EXPOSE 3000
 
-# Command to run the application
-CMD ["node", "server.js"]
+#SERVE
+CMD ["npm","start"]
