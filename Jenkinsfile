@@ -36,7 +36,7 @@ pipeline{
                 stage("Build Docker-File"){
                     steps{
                         script{
-                             call(
+                             docker_build(
                                 imageName: env.DOCKER_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 dockerfile: 'Dockerfile',
@@ -49,7 +49,7 @@ pipeline{
                 stage('Build Migration Image') {
                     steps {
                         script {
-                            call(
+                            docker_build(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 dockerfile: 'scripts/Dockerfile.migration',
@@ -74,7 +74,7 @@ pipeline{
             steps {
                 script {
 
-                    call()
+                    runUnitTests()
                     
                 }
             }
@@ -85,7 +85,7 @@ pipeline{
                 stage('Push Main App Image') {
                     steps {
                         script {
-                            call(
+                            pushDockerImage(
                                 imageName: env.DOCKER_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 credentials: 'dockerhub_creds'
@@ -97,7 +97,7 @@ pipeline{
                 stage('Push Migration Image') {
                     steps {
                         script {
-                            call(
+                            pushDockerImage(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 credentials: 'dockerhub_creds'
@@ -111,7 +111,7 @@ pipeline{
         stage("Update k8s manifests"){
             steps{
                 script{
-                    call(
+                    updateK8sManifests(
                         imageTag: env.DOCKER_IMAGE_TAG,
                         manifestsPath: 'kubernetes',
                         gitCredentials: 'github_creds',
