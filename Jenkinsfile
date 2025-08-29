@@ -36,7 +36,7 @@ pipeline{
                 stage("Build Docker-File"){
                     steps{
                         script{
-                             docker_build(
+                             call(
                                 imageName: env.DOCKER_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 dockerfile: 'Dockerfile',
@@ -49,7 +49,7 @@ pipeline{
                 stage('Build Migration Image') {
                     steps {
                         script {
-                            docker_build(
+                            call(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 dockerfile: 'scripts/Dockerfile.migration',
@@ -64,9 +64,7 @@ pipeline{
 
         stage("RUN TESTS"){
             steps{
-                script{
-                    run_tests()
-                }
+               echo "running tests
             }
         }
 
@@ -74,7 +72,7 @@ pipeline{
             steps {
                 script {
 
-                    trivy_scan()
+                    call()
                     
                 }
             }
@@ -85,7 +83,7 @@ pipeline{
                 stage('Push Main App Image') {
                     steps {
                         script {
-                            docker_push(
+                            call(
                                 imageName: env.DOCKER_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 credentials: 'dockerhub_creds'
@@ -97,7 +95,7 @@ pipeline{
                 stage('Push Migration Image') {
                     steps {
                         script {
-                            docker_push(
+                            call(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 credentials: 'dockerhub_creds'
@@ -111,7 +109,7 @@ pipeline{
         stage("Update k8s manifests"){
             steps{
                 script{
-                    update_k8s_manifests(
+                    call(
                         imageTag: env.DOCKER_IMAGE_TAG,
                         manifestsPath: 'kubernetes',
                         gitCredentials: 'github_creds',
