@@ -25,9 +25,9 @@ pipeline{
 
         stage("pull repo(clone)"){
             steps{
-                script{
+                
                      git clone : "${GIT_URL}",branch :"${GIT_BRANCH}"
-                }
+                
             }
         }
 
