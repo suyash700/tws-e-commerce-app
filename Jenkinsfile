@@ -36,7 +36,7 @@ pipeline{
                 stage("Build Docker-File"){
                     steps{
                         script{
-                             docker_build(
+                             buildDockerImage(
                                 imageName: env.DOCKER_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 dockerfile: 'Dockerfile',
@@ -49,7 +49,7 @@ pipeline{
                 stage('Build Migration Image') {
                     steps {
                         script {
-                            docker_build(
+                            buildDockerImage(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
                                 dockerfile: 'scripts/Dockerfile.migration',
