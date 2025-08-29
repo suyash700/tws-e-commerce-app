@@ -33,7 +33,7 @@ WORKDIR /app
 COPY package*.json .
 
 #CLEAN INSTALL
-npm ci
+RUN npm ci
 
 #COPY REMAINING FILES FOLDERS TO BUILDER STAGE (/app)
 COPY . . 
