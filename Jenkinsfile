@@ -64,7 +64,9 @@ pipeline{
 
         stage("RUN TESTS"){
             steps{
-               echo "running tests
+              script{
+                  call()
+              }
             }
         }
 
