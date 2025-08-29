@@ -65,7 +65,7 @@ pipeline{
         stage("RUN TESTS"){
             steps{
               script{
-                  call()
+                  runUnitTests()
               }
             }
         }
@@ -74,7 +74,7 @@ pipeline{
             steps {
                 script {
 
-                    runUnitTests()
+                    trivyScan()
                     
                 }
             }
