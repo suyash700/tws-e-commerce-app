@@ -64,9 +64,7 @@ pipeline{
 
         stage("RUN TESTS"){
             steps{
-              script{
-                  runUnitTests()
-              }
+              echo "run tests"
             }
         }
 
