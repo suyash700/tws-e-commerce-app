@@ -47,7 +47,7 @@ RUN npm run build
 
 #BASE Image
 
-FROM node:18-alpine as builder
+FROM node:18-alpine as runner
 
 #WORKDIR
 WORKDIR /app
