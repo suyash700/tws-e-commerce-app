@@ -1,74 +1,58 @@
-#BUILDER
-
-##Stage 1
-
-#Base Image
+#----------------------
+# BUILDER STAGE
+#----------------------
 FROM node:18-alpine as builder
 
-#BUILD-TIME ENV VARS
-# Add build-time environment variables
+# Set build-time args
 ARG MONGODB_URI=mongodb://localhost:27017/easyshop
 ARG REDIS_URI=redis://localhost:6379
 ARG NEXTAUTH_URL
 ARG NEXT_PUBLIC_API_URL
 ARG NEXTAUTH_SECRET
 ARG JWT_SECRET
-ARG NODE_ENV=production
 
-# Set environment variables for the build
+# Set build environment variables
 ENV MONGODB_URI=$MONGODB_URI \
     REDIS_URI=$REDIS_URI \
     NEXTAUTH_URL=$NEXTAUTH_URL \
     NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
     NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
     JWT_SECRET=$JWT_SECRET \
-    NODE_ENV=$NODE_ENV \
-    NEXT_PHASE=phase-production-build
+    NEXT_PHASE=phase-production-build \
+    NODE_ENV=development   # temporary for build
 
-
-#WORKDIR
 WORKDIR /app
 
-#COPY
+# Copy package files
 COPY package*.json ./
 
-#CLEAN INSTALL
-RUN npm ci
+# Install all dependencies (including devDependencies)
+RUN npm ci --include=dev
 
-#COPY REMAINING FILES FOLDERS TO BUILDER STAGE (/app)
-COPY . . 
+# Copy source code
+COPY . .
 
-#BUILD IT
+# Build Next.js app
 RUN npm run build
 
-#RUNNER
-
-##STAGE 2
-
-#BASE Image
-
+#----------------------
+# RUNNER STAGE
+#----------------------
 FROM node:18-alpine as runner
 
-#WORKDIR
 WORKDIR /app
-
-#SET ENV VARS
 
 ENV NODE_ENV=production \
     PORT=3000 \
-    # These are placeholder values that will be overridden at runtime
     MONGODB_URI=mongodb://mongodb:27017/easyshop \
     REDIS_URI=redis://redis:6379
 
-
-#COPY NECESSARY FILES
+# Copy only the necessary build artifacts
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/next ./.next
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 
-#EXPOSE PORT
 EXPOSE 3000
 
-#SERVE
 CMD ["node", "server.js"]
