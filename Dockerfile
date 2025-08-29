@@ -3,7 +3,7 @@
 #----------------------
 FROM node:18-alpine AS builder
 
-# Set build-time args (these can be overridden during docker build)
+# Set build-time args
 ARG MONGODB_URI=mongodb://localhost:27017/easyshop
 ARG REDIS_URI=redis://localhost:6379
 ARG NEXTAUTH_URL
@@ -11,15 +11,15 @@ ARG NEXT_PUBLIC_API_URL
 ARG NEXTAUTH_SECRET
 ARG JWT_SECRET
 
-# Set build environment variables
-ENV MONGODB_URI=${MONGODB_URI} \
-    REDIS_URI=${REDIS_URI} \
-    NEXTAUTH_URL=${NEXTAUTH_URL} \
-    NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
-    NEXTAUTH_SECRET=${NEXTAUTH_SECRET} \
-    JWT_SECRET=${JWT_SECRET} \
-    NEXT_PHASE=phase-production-build \
-    NODE_ENV=production
+# Set environment variables for build
+ENV MONGODB_URI=$MONGODB_URI \
+    REDIS_URI=$REDIS_URI \
+    NEXTAUTH_URL=$NEXTAUTH_URL \
+    NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
+    JWT_SECRET=$JWT_SECRET \
+    NODE_ENV=development \
+    NEXT_PHASE=phase-production-build
 
 # Set working directory
 WORKDIR /app
@@ -27,13 +27,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies including devDependencies (needed for Next.js build)
+# Install all dependencies (including devDependencies)
 RUN npm ci --include=dev
 
-# Copy the rest of the source code
+# Copy application source
 COPY . .
 
-# Build Next.js application
+# Build the Next.js app
 RUN npm run build
 
 #----------------------
@@ -41,22 +41,25 @@ RUN npm run build
 #----------------------
 FROM node:18-alpine AS runner
 
+# Set working directory
 WORKDIR /app
 
-# Set runtime environment variables
+# Set environment variables for runtime
 ENV NODE_ENV=production \
     PORT=3000 \
     MONGODB_URI=mongodb://mongodb:27017/easyshop \
     REDIS_URI=redis://redis:6379
 
-# Copy only the necessary build artifacts from builder
+# Copy only necessary build artifacts
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
 
-# Expose application port
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Expose port
 EXPOSE 3000
 
-# Run the application
+# Start the server
 CMD ["node", "server.js"]
