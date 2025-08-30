@@ -72,7 +72,7 @@ pipeline {
                     // Create directory for results
                   
                     trivyScan(
-                        imageName: env.DOCKER_IMAGE_NAME
+                        imageName: env.DOCKER_IMAGE_NAME,
                         imageTag: env.DOCKER_IMAGE_TAG
                     )
                     
