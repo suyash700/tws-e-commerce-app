@@ -1,4 +1,4 @@
-<img width="1053" height="575" alt="Screenshot 2025-09-07 140943" src="https://github.com/user-attachments/assets/ebbf9a2b-cdd6-49e0-a946-0dee08469777" /># 🛍️ EasyShop - Modern E-commerce Platform
+# 🛍️ EasyShop - Modern E-commerce Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.1.0-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -509,6 +509,8 @@ kubectl get svc nginx-ingress-ingress-nginx-controller -n ingress-nginx -o jsonp
 
 ## **Congratulations!** <br/>
 ![EasyShop Website Screenshot](./public/Deployed.png)
+
+## Monitoring and Observability
 
 <img width="1919" height="924" alt="Screenshot 2025-08-16 130444" src="https://github.com/user-attachments/assets/33cbdc78-6c99-4904-b753-9470d236b1f7" />
 
