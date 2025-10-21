@@ -1,4 +1,4 @@
-# 🛍️ EasyShop - Modern E-commerce Platform
+<img width="1053" height="575" alt="Screenshot 2025-09-07 140943" src="https://github.com/user-attachments/assets/ebbf9a2b-cdd6-49e0-a946-0dee08469777" /># 🛍️ EasyShop - Modern E-commerce Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.1.0-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -7,6 +7,13 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 EasyShop is a modern, full-stack e-commerce platform built with Next.js 14, TypeScript, and MongoDB. It features a beautiful UI with Tailwind CSS, secure authentication, real-time cart updates, and a seamless shopping experience.
+
+----------
+
+# Architechture Diagram
+
+<img width="1354" height="700" alt="Screenshot 2025-09-07 140344" src="https://github.com/user-attachments/assets/d492f480-6725-47fb-96a6-b67345f1ee40" />
+
 
 ## ✨ Features
 
@@ -128,6 +135,11 @@ Now, apply the changes and create the infrastructure:
 terraform apply
 ```
 > Confirm with `yes` when prompted.
+
+<img width="1095" height="272" alt="Screenshot 2025-08-10 165141" src="https://github.com/user-attachments/assets/b435d780-236d-464e-9509-5e8681c33b85" />
+
+<img width="1554" height="223" alt="Screenshot 2025-08-10 165130" src="https://github.com/user-attachments/assets/b3bef2b3-3bb7-4360-bed7-24e65ac80265" />
+
 
 7. **Access Your EC2 Instance;** <br/>
 After deployment, grab the public IP of your EC2 instance from the output or AWS Console, then connect using SSH:
@@ -255,6 +267,9 @@ sudo systemctl status jenkins
 >
 > > **Trigger the Pipeline**<br/>
 > > Click **`Build Now`** in Jenkins
+
+<img width="853" height="252" alt="Screenshot 2025-09-07 141237" src="https://github.com/user-attachments/assets/54c777c5-4fa0-4291-9459-9c35e2aa8cb7" />
+
 
 #### **8. CD – Continuous Deployment Setup**<br/>
 **Prerequisites:**<br/>
@@ -494,5 +509,8 @@ kubectl get svc nginx-ingress-ingress-nginx-controller -n ingress-nginx -o jsonp
 
 ## **Congratulations!** <br/>
 ![EasyShop Website Screenshot](./public/Deployed.png)
+
+<img width="1919" height="924" alt="Screenshot 2025-08-16 130444" src="https://github.com/user-attachments/assets/33cbdc78-6c99-4904-b753-9470d236b1f7" />
+
 
 ### Your project is now deployed.
