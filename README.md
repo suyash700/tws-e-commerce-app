@@ -514,5 +514,7 @@ kubectl get svc nginx-ingress-ingress-nginx-controller -n ingress-nginx -o jsonp
 
 <img width="1919" height="924" alt="Screenshot 2025-08-16 130444" src="https://github.com/user-attachments/assets/33cbdc78-6c99-4904-b753-9470d236b1f7" />
 
+<img width="1914" height="952" alt="Screenshot 2025-08-16 125902" src="https://github.com/user-attachments/assets/4ccc68c2-bbfb-4b8f-92a5-1cc7082498e6" />
+
 
 ### Your project is now deployed.
